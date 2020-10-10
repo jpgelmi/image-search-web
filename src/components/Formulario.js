@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import Error from "./Error"
+import Warning from "./Warning"
 
-const Formulario = ({setBusqueda}) => {
+const Formulario = ({setBusqueda, warning, warningMsg}) => {
 
     const [termino, setTermino] = useState("")
     const [error, setError] = useState(false)
@@ -42,7 +43,9 @@ const Formulario = ({setBusqueda}) => {
                     />
                 </div>
             </div>
+            
             {error ? <Error msj = "Agrega un termino de búsqueda"/> : null}
+            {warning ? <Warning msj = {warningMsg}/> : null}
         </form>
      );
 }

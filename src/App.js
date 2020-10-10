@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Formulario from "./components/Formulario"
 import ListadoImagenes from "./components/ListadoImagenes"
+import Footer from './components/Footer';
 
 function App() {
 
@@ -9,6 +10,8 @@ function App() {
   const[imagenes, setImagenes] = useState([])
   const [pagina, setPagina] = useState(1)
   const [totalPaginas, setTotal] = useState(1)
+  const [warning, setWarning] = useState(false)
+  const [warningMsg, setWarningMsg] =useState("")
 
   useEffect(() => {
     const consultarApi = async () => {
@@ -27,6 +30,12 @@ function App() {
       const calcularTotalpaginas = Math.ceil(resultado.totalHits / imagenesPorPagina)
       console.log(calcularTotalpaginas)
       setTotal(calcularTotalpaginas)
+
+      if(resultado.hits.length === 0){
+        setWarning(true)
+        setWarningMsg(busqueda)
+        console.log(`No se encontraron imagenes de ${busqueda}`)
+      }
     }
     consultarApi()
 
@@ -63,29 +72,32 @@ function App() {
         
         <Formulario
           setBusqueda= {setBusqueda}
+          warning = {warning}
+          warningMsg = {warningMsg}
         />
       </div>
         <div className = "row justify-content-center">
           <ListadoImagenes
             imagenes = {imagenes}
           />
-
           {(pagina === 1) ? null : (
             <button
               type = "button"
-              className = "btn btn-info mr-1"
+              className = "btn btn-info mr-1 mb-4"
               onClick = {paginaAnterior}
             >&laquo; Anterior</button>
           )}
 
-          {(pagina === totalPaginas) ? null : (
+          {(pagina === totalPaginas || warning === true) ? null : (
             <button
               type = "button"
-              className = "btn btn-info"
+              className = "btn btn-info mb-5"
               onClick = {paginaSiguente}
             >Siguente &raquo;</button>
           )}
+          
         </div>
+        <Footer/>
     </div>
   );
 }
